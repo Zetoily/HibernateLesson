@@ -1,8 +1,6 @@
 package org.example;
 
-import org.example.model.Item;
-import org.example.model.Passport;
-import org.example.model.Person;
+import org.example.model.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -20,29 +18,39 @@ public class App
 {
     public static void main( String[] args ) {
         Configuration configuration = new Configuration()
-                .addAnnotatedClass(Person.class)
-                .addAnnotatedClass(Passport.class);
+                .addAnnotatedClass(Actor.class)
+                .addAnnotatedClass(Movie.class);
 
         SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
-        try {
+        try (sessionFactory) {
+            Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
 
-            Person person = session.get(Person.class,1);
-            session.remove(person);
+            Actor actor = session.get(Actor.class,2);
+            System.out.println(actor.getMovies());
+
+            Movie movieToRemove = actor.getMovies().get(0);
+
+            actor.getMovies().remove(0);
+            movieToRemove.getActors().remove(actor);
 
 
+//            Actor actor = session.get(Actor.class,1);
+//            System.out.println(actor.getMovies());
 
-//            Person person = new Person("Test Person",20);
-//            Passport passport = new Passport(12345);
+
+//            Movie movie = new Movie("Resorvier Dogs",1992);
+//            Actor actor = session.get(Actor.class,1);
 //
-//            person.setPassport(passport);
+//            movie.setActors(new ArrayList<>(Collections.singletonList(actor)));
+//            actor.getMovies().add(movie);
 //
-//            session.save(person);
+//            session.save(movie);
+
+//            Movie movie= session.get(Movie.class,1);
+//            System.out.println(movie.getActors());
 
             session.getTransaction().commit();
-        } finally {
-            sessionFactory.close();
         }
     }
 }
