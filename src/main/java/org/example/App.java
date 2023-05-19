@@ -27,21 +27,12 @@ public class App
         try {
             session.beginTransaction();
 
-            Person person = session.get(Person.class,4);
-            Item item = session.get(Item.class,1);
+            Person person = new Person("Lololoshka",12);
+            person.addItem(new Item("Item"));
+            person.addItem(new Item("Item2"));
+            person.addItem(new Item("Item3"));
 
-            item.getOwner().getItems().remove(item);
-
-            //Dve storoni SQL
-            item.setOwner(person);
-
-            person.getItems().add(item);
-
-//            //SQL
-//            session.remove(person);
-//
-//            //True state of cache
-//            person.getItems().forEach(item -> item.setOwner(null));
+            session.save(person);
 
             session.getTransaction().commit();
         } finally {
