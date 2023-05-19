@@ -1,6 +1,8 @@
 package org.example;
 
+import org.example.model.Director;
 import org.example.model.Item;
+import org.example.model.Movie;
 import org.example.model.Person;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -19,20 +21,19 @@ public class App
 {
     public static void main( String[] args ) {
         Configuration configuration = new Configuration()
-                .addAnnotatedClass(Person.class)
-                .addAnnotatedClass(Item.class);
+                .addAnnotatedClass(Movie.class)
+                .addAnnotatedClass(Director.class);
 
         SessionFactory sessionFactory = configuration.buildSessionFactory();
         Session session = sessionFactory.getCurrentSession();
         try {
             session.beginTransaction();
 
-            Person person = new Person("Lololoshka",12);
-            person.addItem(new Item("Item"));
-            person.addItem(new Item("Item2"));
-            person.addItem(new Item("Item3"));
 
-            session.save(person);
+            Director director = session.get(Director.class,7);
+            Movie movie = director.getMovies().get(0);
+            session.remove(movie);
+            director.getMovies().remove(0);
 
             session.getTransaction().commit();
         } finally {
